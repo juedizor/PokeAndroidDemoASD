@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:co.com.grupoasd.pokedexdemoasd="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/action_ajustes"
+        android:icon="@android:drawable/ic_menu_manage"
+        co.com.grupoasd.pokedexdemoasd:showAsAction="never"
+        android:title="Ajustes">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/grilla"
+                    android:title="Vista de Grilla" />
+                <item
+                    android:id="@+id/lista"
+                    android:title="Vista de Lista" />
+            </group>
+        </menu>
+    </item>
+</menu>

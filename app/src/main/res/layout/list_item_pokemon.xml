@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/imageViewPoke"
+        style="@style/AppTheme"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:src="@android:drawable/ic_menu_gallery"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/borde_image_pokemon"/>
+
+    <TextView
+        android:id="@+id/textViewNombrePoke"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="Nombre Pokemon"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="10dp"
+        android:layout_below="@+id/imageViewCanal"
+        android:layout_centerHorizontal="true" />
+
+</LinearLayout>
