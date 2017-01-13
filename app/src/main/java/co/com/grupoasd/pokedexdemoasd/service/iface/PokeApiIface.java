@@ -11,7 +11,7 @@ import co.com.grupoasd.pokedexdemoasd.object.PokemonResults;
  */
 
 public interface PokeApiIface {
-    public PokemonResults getPokemonsData(String url);
+    public PokemonResults getPokemonsData(String url, int id);
     public void setPokemonDetalle(String url, PokemonDetalle pokemon);
     public void setPokemonUrlImage(String url, Pokemon pokemon);
 }

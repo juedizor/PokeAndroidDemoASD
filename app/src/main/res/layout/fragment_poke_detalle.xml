@@ -10,7 +10,8 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:padding="5dp">
 
         <ImageView
             android:layout_width="150dp"
@@ -23,24 +24,60 @@
             android:text="Nombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textViewNombre" />
+            android:id="@+id/textViewNombre"
+            android:textSize="18sp"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textStyle="normal|bold"
+            android:fontFamily="sans-serif"
+            android:paddingBottom="4dp"
+            android:gravity="center" />
 
         <TextView
-            android:text="Tipo"
+            android:text="Tipo: "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textViewTipo" />
+            android:id="@+id/textViewTipo"
+            android:paddingBottom="4dp" />
 
         <TextView
-            android:text="Ancho"
+            android:text="Ancho: "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textViewAncho" />
+            android:id="@+id/textViewAncho"
+            android:paddingBottom="4dp" />
 
         <TextView
-            android:text="Alto"
+            android:text="Alto: "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textViewAlto" />
+            android:id="@+id/textViewAlto"
+            android:paddingBottom="4dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Color: "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewColor"
+                android:layout_weight="1" />
+
+            <TextView
+                android:text="Forma:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewForma"
+                android:layout_weight="1" />
+
+            <TextView
+                android:text="Habitad: "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewHabitad"
+                android:layout_weight="1" />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -76,10 +77,9 @@ public class FragmentsActivity extends AppCompatActivity {
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                if(pokemonResults.getUrlNext()!=null){
+                if (pokemonResults.getUrlNext() != null) {
                     actionBuscar(pokemonResults.getUrlNext());
-                }else{
+                } else {
                     actionBuscar("");
                 }
             }
@@ -95,18 +95,19 @@ public class FragmentsActivity extends AppCompatActivity {
     }
 
     public void actionBuscar(String url) {
-        if(radioButtonPorID.isChecked()){
+        if (radioButtonPorID.isChecked()) {
             if (!textBuscar.getText().toString().equals("")) {
                 int id = Integer.parseInt(textBuscar.getText().toString());
                 if (id > 0) {
-
+                    BuscarAsyncTask buscarAsyncTask = new BuscarAsyncTask();
+                    buscarAsyncTask.execute(PREFIJO_API + PREFIJO_POKEMON, id + "");
                 } else {
                     Toast.makeText(this, "Por favor ingrese un valor mayor a 0", Toast.LENGTH_LONG).show();
                 }
             } else {
                 Toast.makeText(this, "Por favor ingrese un valor mayor a 0", Toast.LENGTH_LONG).show();
             }
-        }else{
+        } else {
             BuscarAsyncTask buscarAsyncTask = new BuscarAsyncTask();
             buscarAsyncTask.execute(url);
         }
@@ -120,13 +121,20 @@ public class FragmentsActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(String... urls) {
+        protected Boolean doInBackground(String... params) {
             String urlApi;
-            if (urls.length > 0 && !TextUtils.isEmpty(urls[0])) {
-                urlApi = urls[0];
-                pokemonResults = pokeApi.getPokemonsData(urlApi);
+            String id;
+            if (params.length > 0 && !TextUtils.isEmpty(params[0])) {
+                urlApi = params[0];
+                if (!TextUtils.isEmpty(params[1])) {
+                    id = params[1];
+                    pokemonResults = pokeApi.getPokemonsData(urlApi, Integer.parseInt(id));
+                } else {
+                    pokemonResults = pokeApi.getPokemonsData(urlApi, 0);
+                }
+
             } else {
-                pokemonResults = pokeApi.getPokemonsData(PREFIJO_API + PREFIJO_POKEMON);
+                pokemonResults = pokeApi.getPokemonsData(PREFIJO_API + PREFIJO_POKEMON, 0);
             }
             pokemons = pokemonResults.getPokemons();
             return true;
@@ -138,9 +146,11 @@ public class FragmentsActivity extends AppCompatActivity {
             if (result) {
                 if (!pokemons.isEmpty()) {
                     fragmentManager = getSupportFragmentManager();
-                    if(listadoFragment != null){
-                        transaction = fragmentManager.beginTransaction();
-                        transaction.remove(listadoFragment).commit();
+                    if(fragmentManager.getFragments()!=null){
+                        for (Fragment fragment : fragmentManager.getFragments()) {
+                            transaction = fragmentManager.beginTransaction();
+                            transaction.remove(fragment).commit();
+                        }
                     }
                     transaction = fragmentManager.beginTransaction();
                     listadoFragment = new ListadoFragment();

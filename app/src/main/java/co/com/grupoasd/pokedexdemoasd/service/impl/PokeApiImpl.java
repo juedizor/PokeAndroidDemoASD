@@ -28,28 +28,33 @@ public class PokeApiImpl extends BaseService implements PokeApiIface {
     public static final String PREFIJO_POKEMON = "pokemon/";
 
     @Override
-    public PokemonResults getPokemonsData(String url) {
+    public PokemonResults getPokemonsData(String url, int id) {
         PokemonResults pokemonResults = new PokemonResults();
         List<Pokemon> pokemons = new ArrayList<>();
         String count = "";
         String urlPrevious = "";
         String urlNext = "";
         try {
-            JSONObject jsonObject = getJsonObjectPokemon(url, 0);
-            count = jsonObject.getString("count");
-            urlPrevious = jsonObject.getString("previous");
-            JSONArray resultado = jsonObject.getJSONArray("results");
-            urlNext = jsonObject.getString("next");
-            setListaPokemon(pokemons,resultado);
+            JSONObject jsonObject = getJsonObjectPokemon(url + (id != 0 ? id : ""));
+            if (id > 0) {
+                setPokemon(pokemons, jsonObject, url + id);
+                setPokemonDetalle(jsonObject, pokemons.get(0).getPokemonDetalle());
+            } else {
+                count = jsonObject.getString("count");
+                urlPrevious = jsonObject.getString("previous");
+                JSONArray resultado = jsonObject.getJSONArray("results");
+                urlNext = jsonObject.getString("next");
+                setListaPokemon(pokemons, resultado);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
         pokemonResults.setPokemons(pokemons);
-        pokemonResults.setTotal(!count.equals("")?Integer.parseInt(count):0);
-        pokemonResults.setUrlNext(!urlNext.equals("")?urlNext:"");
-        pokemonResults.setUrlPrevious(!urlPrevious.equals("")?urlPrevious:"");
+        pokemonResults.setTotal(!count.equals("") ? Integer.parseInt(count) : 0);
+        pokemonResults.setUrlNext(!urlNext.equals("") ? urlNext : "");
+        pokemonResults.setUrlPrevious(!urlPrevious.equals("") ? urlPrevious : "");
 
         return pokemonResults;
     }
@@ -57,19 +62,8 @@ public class PokeApiImpl extends BaseService implements PokeApiIface {
     @Override
     public void setPokemonDetalle(String url, PokemonDetalle pokemonDetalle) {
         try {
-            JSONObject jsonObject = getJsonObjectPokemon(url, 0);
-            pokemonDetalle.setAlto(jsonObject.getInt("height"));
-            pokemonDetalle.setAncho(jsonObject.getInt("weight"));
-            PokemonEspecie pokemonEspecie = new PokemonEspecie();
-            JSONObject jsonObjectEspecie = jsonObject.getJSONObject("species");
-            pokemonEspecie.setUrlEspecie(jsonObjectEspecie.getString("url"));
-            JSONObject jsonObjectEspecieDetalle = getJsonObjectPokemon(pokemonEspecie.getUrlEspecie(), 0);
-            pokemonEspecie.setColor(jsonObjectEspecieDetalle.getJSONObject("color").getString("name"));
-            pokemonEspecie.setForma(jsonObjectEspecieDetalle.getJSONObject("shape").getString("name"));
-            pokemonEspecie.setHabitad(jsonObjectEspecieDetalle.getJSONObject("habitat").getString("name"));
-            pokemonDetalle.setPokemonEspecie(pokemonEspecie);
-            String[] type = getTypes(jsonObject.getJSONArray("types"));
-            pokemonDetalle.setType(type);
+            JSONObject jsonObject = getJsonObjectPokemon(url);
+            setPokemonDetalle(jsonObject, pokemonDetalle);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -77,11 +71,26 @@ public class PokeApiImpl extends BaseService implements PokeApiIface {
         }
     }
 
+    private void setPokemonDetalle(JSONObject jsonObject, PokemonDetalle pokemonDetalle) throws JSONException, IOException {
+        pokemonDetalle.setAlto(jsonObject.getInt("height"));
+        pokemonDetalle.setAncho(jsonObject.getInt("weight"));
+        PokemonEspecie pokemonEspecie = new PokemonEspecie();
+        JSONObject jsonObjectEspecie = jsonObject.getJSONObject("species");
+        pokemonEspecie.setUrlEspecie(jsonObjectEspecie.getString("url"));
+        JSONObject jsonObjectEspecieDetalle = getJsonObjectPokemon(pokemonEspecie.getUrlEspecie());
+        pokemonEspecie.setColor(jsonObjectEspecieDetalle.getJSONObject("color").getString("name"));
+        pokemonEspecie.setForma(jsonObjectEspecieDetalle.getJSONObject("shape").getString("name"));
+        pokemonEspecie.setHabitad(jsonObjectEspecieDetalle.getJSONObject("habitat").getString("name"));
+        pokemonDetalle.setPokemonEspecie(pokemonEspecie);
+        String[] type = getTypes(jsonObject.getJSONArray("types"));
+        pokemonDetalle.setType(type);
+    }
+
     @Override
     public void setPokemonUrlImage(String url, Pokemon pokemon) {
         PokemonDetalle pokemonDetalle = new PokemonDetalle();
         try {
-            JSONObject jsonObject = getJsonObjectPokemon(url, 0);
+            JSONObject jsonObject = getJsonObjectPokemon(url);
             JSONObject jsonObjectSprites = jsonObject.getJSONObject("sprites");
             pokemonDetalle.setFrontDefaultImage(jsonObjectSprites.getString("front_default"));
             pokemon.setPokemonDetalle(pokemonDetalle);
@@ -92,15 +101,10 @@ public class PokeApiImpl extends BaseService implements PokeApiIface {
         }
     }
 
-    private JSONObject getJsonObjectPokemon(String url, int id) throws IOException {
+    private JSONObject getJsonObjectPokemon(String url) throws IOException {
         JSONObject respJSON = null;
         try {
             OkHttpClient client = new OkHttpClient();
-            if (id > 0) {
-
-            } else {
-
-            }
             String result = ApiCall.GET(client, url);
             respJSON = new JSONObject(result);
         } catch (IOException ex) {
@@ -113,7 +117,7 @@ public class PokeApiImpl extends BaseService implements PokeApiIface {
 
 
     private void setListaPokemon(List<Pokemon> pokemons, JSONArray resultado) throws JSONException {
-        for(int i =0; i<resultado.length();i++){
+        for (int i = 0; i < resultado.length(); i++) {
             Pokemon pokemon = new Pokemon();
             JSONObject jsonObject = resultado.getJSONObject(i);
             pokemon.setNombre(jsonObject.getString("name"));
@@ -123,9 +127,21 @@ public class PokeApiImpl extends BaseService implements PokeApiIface {
         }
     }
 
+    private void setPokemon(List<Pokemon> pokemons, JSONObject jsonObject, String url) throws JSONException, IOException {
+        Pokemon pokemon = new Pokemon();
+        PokemonDetalle pokemonDetalle = new PokemonDetalle();
+        pokemon.setUrl(url);
+        pokemon.setNombre(jsonObject.getString("name"));
+        JSONObject jsonObjectSprites = jsonObject.getJSONObject("sprites");
+        pokemonDetalle.setFrontDefaultImage(jsonObjectSprites.getString("front_default"));
+        pokemon.setPokemonDetalle(pokemonDetalle);
+        setPokemonDetalle(jsonObject, pokemonDetalle);
+        pokemons.add(pokemon);
+    }
+
     private String[] getTypes(JSONArray jsonArray) throws JSONException {
         String[] tipos = new String[jsonArray.length()];
-        for(int i = 0;i<jsonArray.length();i++){
+        for (int i = 0; i < jsonArray.length(); i++) {
             tipos[i] = jsonArray.getJSONObject(i).getJSONObject("type").getString("name");
         }
         return tipos;

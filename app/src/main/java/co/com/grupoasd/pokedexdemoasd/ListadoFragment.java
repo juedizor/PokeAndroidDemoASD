@@ -157,7 +157,9 @@ public class ListadoFragment extends Fragment {
         @Override
         protected Pokemon doInBackground(Pokemon... pokemons) {
             Pokemon pokemon = pokemons[0];
-            pokeApi.setPokemonDetalle(pokemon.getUrl(), pokemon.getPokemonDetalle());
+            if(pokemon.getPokemonDetalle().getPokemonEspecie() == null){
+                pokeApi.setPokemonDetalle(pokemon.getUrl(), pokemon.getPokemonDetalle());
+            }
             return pokemon;
         }
 

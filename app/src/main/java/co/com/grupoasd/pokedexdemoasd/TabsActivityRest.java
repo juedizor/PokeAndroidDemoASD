@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -112,7 +113,8 @@ public class TabsActivityRest extends AppCompatActivity {
             if (!textBuscar.getText().toString().equals("")) {
                 int id = Integer.parseInt(textBuscar.getText().toString());
                 if (id > 0) {
-
+                    BuscarAsyncTask buscarAsyncTask = new BuscarAsyncTask();
+                    buscarAsyncTask.execute(PREFIJO_API + PREFIJO_POKEMON, id+"");
                 } else {
                     Toast.makeText(this, "Por favor ingrese un valor mayor a 0", Toast.LENGTH_LONG).show();
                 }
@@ -156,13 +158,20 @@ public class TabsActivityRest extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(String... urls) {
+        protected Boolean doInBackground(String... params) {
             String urlApi;
-            if(urls.length>0){
-                urlApi = urls[0];
-                pokemonResults = pokeApi.getPokemonsData(urlApi);
-            }else{
-                pokemonResults = pokeApi.getPokemonsData(PREFIJO_API + PREFIJO_POKEMON);
+            String id;
+            if (params.length > 0 && !TextUtils.isEmpty(params[0])) {
+                urlApi = params[0];
+                if(!TextUtils.isEmpty(params[1])){
+                    id = params[1];
+                    pokemonResults = pokeApi.getPokemonsData(urlApi, Integer.parseInt(id));
+                }else{
+                    pokemonResults = pokeApi.getPokemonsData(urlApi, 0);
+                }
+
+            } else {
+                pokemonResults = pokeApi.getPokemonsData(PREFIJO_API + PREFIJO_POKEMON, 0);
             }
             pokemons = pokemonResults.getPokemons();
             return true;
