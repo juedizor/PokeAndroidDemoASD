@@ -109,7 +109,7 @@ public class FragmentsActivity extends AppCompatActivity {
             }
         } else {
             BuscarAsyncTask buscarAsyncTask = new BuscarAsyncTask();
-            buscarAsyncTask.execute(url);
+            buscarAsyncTask.execute(url, "");
         }
     }
 
