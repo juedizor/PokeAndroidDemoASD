@@ -140,6 +140,9 @@ public class ListadoFragment extends Fragment {
                 recView.setLayoutManager(
                         new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
                 break;
+            default:
+                recView.setLayoutManager(new GridLayoutManager(getContext(),3));
+                break;
         }
     }
 
