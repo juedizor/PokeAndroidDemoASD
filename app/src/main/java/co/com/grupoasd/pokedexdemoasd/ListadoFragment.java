@@ -27,6 +27,7 @@ import java.util.List;
 
 import co.com.grupoasd.pokedexdemoasd.adapter.AdapterPokeRecycler;
 import co.com.grupoasd.pokedexdemoasd.object.Pokemon;
+import co.com.grupoasd.pokedexdemoasd.persistencia.PokemonDBController;
 import co.com.grupoasd.pokedexdemoasd.service.iface.PokeApiIface;
 import co.com.grupoasd.pokedexdemoasd.service.impl.PokeApiImpl;
 
@@ -43,6 +44,7 @@ public class ListadoFragment extends Fragment {
     FragmentManager fragmentManager;
     FragmentTransaction transaction;
     DetalleFragment detalleFragment;
+    PokemonDBController dbController;
 
     public ListadoFragment() {
         // Required empty public constructor
@@ -53,6 +55,7 @@ public class ListadoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         adaptador = new AdapterPokeRecycler(pokemons, getContext());
         prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+        dbController = new PokemonDBController(getContext());
     }
 
     @Override

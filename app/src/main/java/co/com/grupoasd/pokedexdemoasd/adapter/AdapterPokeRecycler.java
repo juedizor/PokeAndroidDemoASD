@@ -46,7 +46,7 @@ public class AdapterPokeRecycler extends RecyclerView.Adapter<AdapterPokeRecycle
         holder.bindItem(item);
         holder.getView().setTag(item);
         Glide.with(context)
-                .load(item.getPokemonDetalle().getFrontDefaultImage())
+                .load(R.mipmap.ic_launcher)
                 .crossFade()
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher)
@@ -75,17 +75,23 @@ public class AdapterPokeRecycler extends RecyclerView.Adapter<AdapterPokeRecycle
 
         private ImageView imageViewPoke;
         private TextView textViewNombre;
+        private ImageView imageViewFavorito;
         View v;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             imageViewPoke = (ImageView) itemView.findViewById(R.id.imageViewPoke);
             textViewNombre = (TextView) itemView.findViewById(R.id.textViewNombrePoke);
+            imageViewFavorito = (ImageView) itemView.findViewById(R.id.imageViewFavorito);
             v = itemView;
         }
 
         public ImageView getImageViewPoke(){
             return imageViewPoke;
+        }
+
+        public ImageView getImageViewFavorito() {
+            return imageViewFavorito;
         }
 
         public View getView(){

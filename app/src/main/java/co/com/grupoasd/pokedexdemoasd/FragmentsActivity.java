@@ -25,6 +25,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.manager.SupportRequestManagerFragment;
+
 import java.util.List;
 
 import co.com.grupoasd.pokedexdemoasd.object.Pokemon;
@@ -45,6 +47,7 @@ public class FragmentsActivity extends AppCompatActivity {
     EditText textBuscar;
     ImageButton buttonBuscar;
     Button buttonNext;
+    Button buttonPrev;
     ProgressDialog progressDialog;
     PokemonResults pokemonResults = new PokemonResults();
     private PokeApiIface pokeApi;
@@ -65,14 +68,17 @@ public class FragmentsActivity extends AppCompatActivity {
                 if (radioButtonPorID.isChecked()) {
                     textBuscar.setEnabled(true);
                     buttonNext.setEnabled(false);
+                    buttonPrev.setEnabled(false);
                 } else {
                     textBuscar.setEnabled(false);
                     buttonNext.setEnabled(true);
+                    buttonPrev.setEnabled(true);
                 }
             }
         });
         textBuscar = (EditText) findViewById(R.id.editTextID);
         buttonBuscar = (ImageButton) findViewById(R.id.imageButtonBuscar);
+        buttonPrev = (Button) findViewById(R.id.buttonPrev);
         buttonNext = (Button) findViewById(R.id.buttonNext);
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +90,18 @@ public class FragmentsActivity extends AppCompatActivity {
                 }
             }
         });
+        buttonPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (pokemonResults.getUrlPrevious() != null) {
+                    actionBuscar(pokemonResults.getUrlPrevious());
+                } else {
+                    actionBuscar("");
+                }
+            }
+        });
         buttonNext.setEnabled(false);
+        buttonPrev.setEnabled(false);
         buttonBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -148,8 +165,10 @@ public class FragmentsActivity extends AppCompatActivity {
                     fragmentManager = getSupportFragmentManager();
                     if(fragmentManager.getFragments()!=null){
                         for (Fragment fragment : fragmentManager.getFragments()) {
-                            transaction = fragmentManager.beginTransaction();
-                            transaction.remove(fragment).commit();
+                            if(!(fragment instanceof SupportRequestManagerFragment)){
+                                transaction = fragmentManager.beginTransaction();
+                                transaction.remove(fragment).commitAllowingStateLoss();
+                            }
                         }
                     }
                     transaction = fragmentManager.beginTransaction();

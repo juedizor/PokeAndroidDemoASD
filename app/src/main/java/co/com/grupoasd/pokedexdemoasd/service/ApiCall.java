@@ -14,9 +14,6 @@ import okhttp3.Response;
  */
 
 public class ApiCall {
-    //GET network request
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
 
     public static String GET(OkHttpClient client, HttpUrl url) throws IOException {
         Request request = new Request.Builder()
@@ -53,4 +50,6 @@ public class ApiCall {
         Response response = client.newCall(request).execute();
         return response.body().string();
     }
+
+
 }

@@ -5,6 +5,15 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +23,7 @@ import co.com.grupoasd.pokedexdemoasd.object.Pokemon;
 import co.com.grupoasd.pokedexdemoasd.object.PokemonDetalle;
 import co.com.grupoasd.pokedexdemoasd.object.PokemonEspecie;
 import co.com.grupoasd.pokedexdemoasd.object.PokemonResults;
+import co.com.grupoasd.pokedexdemoasd.object.PokemonResultsSpring;
 import co.com.grupoasd.pokedexdemoasd.service.ApiCall;
 import co.com.grupoasd.pokedexdemoasd.service.iface.PokeApiIface;
 import co.com.grupoasd.pokedexdemoasd.service.modelo.BaseService;
@@ -26,6 +36,7 @@ import okhttp3.OkHttpClient;
 public class PokeApiImpl extends BaseService implements PokeApiIface {
 
     public static final String PREFIJO_POKEMON = "pokemon/";
+    RestTemplate restTemplate;
 
     @Override
     public PokemonResults getPokemonsData(String url, int id) {
@@ -104,11 +115,19 @@ public class PokeApiImpl extends BaseService implements PokeApiIface {
     private JSONObject getJsonObjectPokemon(String url) throws IOException {
         JSONObject respJSON = null;
         try {
-            OkHttpClient client = new OkHttpClient();
-            String result = ApiCall.GET(client, url);
+            restTemplate = new RestTemplate();
+            List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+            messageConverters.add(new FormHttpMessageConverter());
+            messageConverters.add(new StringHttpMessageConverter());
+            //restTemplate.getMessageConverters().add(0, new MappingJackson2HttpMessageConverter());
+            restTemplate.setMessageConverters(messageConverters);
+            //PokemonResultsSpring result = restTemplate.getForObject(url, PokemonResultsSpring.class);
+            String result = restTemplate.getForObject(url, String.class);
+            /*OkHttpClient client = new OkHttpClient();
+            String result = ApiCall.GET(client, url);*/
             respJSON = new JSONObject(result);
-        } catch (IOException ex) {
-            Log.e(PokeApiImpl.class.getName(), "Error getJsonObject!", ex);
+        /*} catch (IOException ex) {
+            Log.e(PokeApiImpl.class.getName(), "Error getJsonObject!", ex);*/
         } catch (Exception ex) {
             Log.e(PokeApiImpl.class.getName(), "Error getJsonObject!", ex);
         }
@@ -122,7 +141,7 @@ public class PokeApiImpl extends BaseService implements PokeApiIface {
             JSONObject jsonObject = resultado.getJSONObject(i);
             pokemon.setNombre(jsonObject.getString("name"));
             pokemon.setUrl(jsonObject.getString("url"));
-            setPokemonUrlImage(pokemon.getUrl(), pokemon);
+            //setPokemonUrlImage(pokemon.getUrl(), pokemon);
             pokemons.add(pokemon);
         }
     }
