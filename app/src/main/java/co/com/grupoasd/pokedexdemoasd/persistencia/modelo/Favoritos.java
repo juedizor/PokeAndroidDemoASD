@@ -6,17 +6,12 @@ package co.com.grupoasd.pokedexdemoasd.persistencia.modelo;
 
 public class Favoritos {
 
-    private final String DATABASE_TABLE = "favoritos";
     private String nombre;
     private String urlImage;
     private String urlPokemon;
 
     public Favoritos(){
 
-    }
-
-    public String getDatabaseTable() {
-        return DATABASE_TABLE;
     }
 
     public String getNombre() {

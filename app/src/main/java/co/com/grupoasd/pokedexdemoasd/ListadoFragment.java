@@ -44,7 +44,6 @@ public class ListadoFragment extends Fragment {
     FragmentManager fragmentManager;
     FragmentTransaction transaction;
     DetalleFragment detalleFragment;
-    PokemonDBController dbController;
 
     public ListadoFragment() {
         // Required empty public constructor
@@ -55,7 +54,6 @@ public class ListadoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         adaptador = new AdapterPokeRecycler(pokemons, getContext());
         prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
-        dbController = new PokemonDBController(getContext());
     }
 
     @Override

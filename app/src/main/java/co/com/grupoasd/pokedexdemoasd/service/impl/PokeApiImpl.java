@@ -141,7 +141,7 @@ public class PokeApiImpl extends BaseService implements PokeApiIface {
             JSONObject jsonObject = resultado.getJSONObject(i);
             pokemon.setNombre(jsonObject.getString("name"));
             pokemon.setUrl(jsonObject.getString("url"));
-            //setPokemonUrlImage(pokemon.getUrl(), pokemon);
+            setPokemonUrlImage(pokemon.getUrl(), pokemon);
             pokemons.add(pokemon);
         }
     }

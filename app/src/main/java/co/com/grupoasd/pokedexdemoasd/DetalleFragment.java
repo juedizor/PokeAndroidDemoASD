@@ -8,15 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import co.com.grupoasd.pokedexdemoasd.object.Pokemon;
+import co.com.grupoasd.pokedexdemoasd.persistencia.PokemonDBController;
 
 
 public class DetalleFragment extends Fragment {
 
+    ImageView imageViewFav;
     ImageView imageViewIcono;
     TextView textViewNombre;
     TextView textViewTipo;
@@ -26,16 +29,15 @@ public class DetalleFragment extends Fragment {
     TextView textViewForma;
     TextView textViewHabitad;
     Pokemon pokemon;
+    PokemonDBController dbController;
 
     public DetalleFragment() {
         // Required empty public constructor
-        pokemon = new Pokemon();
     }
 
     public void setPokemon(Pokemon pokemon) {
         this.pokemon = pokemon;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,7 +52,8 @@ public class DetalleFragment extends Fragment {
         textViewColor = (TextView) view.findViewById(R.id.textViewColor);
         textViewForma = (TextView) view.findViewById(R.id.textViewForma);
         textViewHabitad = (TextView) view.findViewById(R.id.textViewHabitad);
-
+        imageViewFav = (ImageView) view.findViewById(R.id.imageViewFavorito);
+        dbController = new PokemonDBController(getContext());
         return view;
     }
 
@@ -72,6 +75,17 @@ public class DetalleFragment extends Fragment {
                     .error(R.mipmap.ic_launcher)
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .into(imageViewIcono);
+            imageViewFav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(dbController.insertarFavorito(pokemon.getNombre(),pokemon.getPokemonDetalle().getFrontDefaultImage(),pokemon.getUrl())){
+                        imageViewFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite));
+                        Toast.makeText(getContext(),"Pokemon agregado a favoritos correctamente", Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(getContext(),"Ocurrio un error guardando favorito", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
         }
     }
 

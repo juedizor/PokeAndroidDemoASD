@@ -46,7 +46,7 @@ public class AdapterPokeRecycler extends RecyclerView.Adapter<AdapterPokeRecycle
         holder.bindItem(item);
         holder.getView().setTag(item);
         Glide.with(context)
-                .load(R.mipmap.ic_launcher)
+                .load(datos.get(position).getPokemonDetalle().getFrontDefaultImage())
                 .crossFade()
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher)
