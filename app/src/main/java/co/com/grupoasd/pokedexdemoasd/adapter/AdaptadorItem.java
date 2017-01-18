@@ -14,7 +14,7 @@ import co.com.grupoasd.pokedexdemoasd.object.Item;
 /**
  * Created by ASD on 28/12/2016.
  */
-
+// comentario
 public class AdaptadorItem extends ArrayAdapter {
 
     Item[] datos;
